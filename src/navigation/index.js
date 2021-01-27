@@ -12,8 +12,8 @@ const { Screen, Navigator } = createStackNavigator();
 const Navigation = () => {
     return(
       <NavigationContainer>
-          <Navigator screenOptions={{headerTitleAlign: 'center'}}>
-              <Screen name="Login" component={Login} options={{ headerShown: false }}/>
+          <Navigator screenOptions={{headerShown: false}}>
+              <Screen name="Login" component={Login} />
           </Navigator>
       </NavigationContainer> 
     )
