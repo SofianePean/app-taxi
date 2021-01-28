@@ -3,6 +3,7 @@ import { View, StyleSheet, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { prefix, auth } from '../../utils/constant';
 
+
 // Import composant
 import Block from '../Block';
 import Title from '../Title';
@@ -13,6 +14,8 @@ const { width } = Dimensions.get('window');
 const Home = ({ navigation }) => {
 
     const { container, icon, container_2, titleContainer,roundContainer } = styles;
+
+    const goTo = route => navigation.push(route)
 
     return(
         <View style={container}>
@@ -26,7 +29,7 @@ const Home = ({ navigation }) => {
                     <Title content="Vous recherchez un" size="medium" />
                 </View>
                 <View style={roundContainer}>
-                    <RoundBtn iconName={`${prefix}-car`}/>
+                    <RoundBtn iconName={`${prefix}-car`} onPress={() => goTo("Passenger")}/>
                     <RoundBtn iconName={`${prefix}-person`} />
                 </View>
             </View>

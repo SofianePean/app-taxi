@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as Font from 'expo-font';
+import * as Permissions from 'expo-permissions'
 import { StyleSheet, SafeAreaView, ActivityIndicator, View } from 'react-native';
 import Constants from 'expo-constants';
 import { renderInitialScreen } from './src/utils/constant';
@@ -12,16 +13,23 @@ export default function App() {
   const [initialScreen, setinitialScreen] = useState("Login");
 
   const loadFont = async() => {
+    const result = await new Promise.all([
+      await Font.loadAsync({
+        'Gilroy-Bold': require('./assets/fonts/Gilroy-Bold.ttf'),
+        "GTSectraFineRegular": require('./assets/fonts/GT-Sectra-Fine-Regular.ttf'),
+        "MontserratBlack": require('./assets/fonts/Montserrat-Black.ttf'),
+        "MontserratMedium": require('./assets/fonts/Montserrat-Medium.ttf'),
+      }),
+      renderInitialScreen(),
+      Permissions.askAsync(Permissions.LOCATION)
+    ]);
+    const route = result[1];
+    const status = result[2].status;
+    if (route && status === "granted") {
+      setinitialScreen(route)
+      setLoading(false)
+    }
     try {
-        await Font.loadAsync({
-          'Gilroy-Bold': require('./assets/fonts/Gilroy-Bold.ttf'),
-          "GTSectraFineRegular": require('./assets/fonts/GT-Sectra-Fine-Regular.ttf'),
-          "MontserratBlack": require('./assets/fonts/Montserrat-Black.ttf'),
-          "MontserratMedium": require('./assets/fonts/Montserrat-Medium.ttf'),
-        });
-        const screen = await renderInitialScreen();
-        if (screen) setinitialScreen(screen)
-        console.log('INITIAL SCREEN',initialScreen)
         setLoading(false);
     } catch (e) {
         console.log(e)

@@ -6,11 +6,11 @@ import { prefix } from '../../utils/constant';
 
 
 
-const RoundBtn = ({iconName}) => {
+const RoundBtn = ({iconName, onPress}) => {
 
     const { container, iconStyle } = styles
     return(
-        <TouchableOpacity>
+        <TouchableOpacity onPress={onPress}>
             <View style={container}>
                 <Ionicons style={iconStyle} name={iconName}/>
             </View>
