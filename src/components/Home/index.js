@@ -1,23 +1,17 @@
 import React from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { prefix, auth } from '../../utils/constant';
 
 // Import composant
 import Block from '../Block';
 import Title from '../Title';
-import LoginBtn from '../LoginBtn';
 
 const { width } = Dimensions.get('window');
 
-const Login = ({ navigation }) => {
+const Home = ({ navigation }) => {
 
     const { container, icon, container_2, titleContainer } = styles;
-
-    const handleLogin = () => {
-        auth();
-        navigation.push('Home')
-    }
 
     return(
         <View style={container}>
@@ -30,7 +24,6 @@ const Login = ({ navigation }) => {
                     <Title content="Authentification" size="small" />
                     <Title content="Google Connexion" size="medium" />
                 </View>
-                <LoginBtn onPress={handleLogin}/>
             </View>
         </View>
     )
@@ -59,4 +52,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Login;
+export default Home;
