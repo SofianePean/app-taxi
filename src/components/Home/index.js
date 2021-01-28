@@ -6,12 +6,13 @@ import { prefix, auth } from '../../utils/constant';
 // Import composant
 import Block from '../Block';
 import Title from '../Title';
+import RoundBtn from '../RoundBtn';
 
 const { width } = Dimensions.get('window');
 
 const Home = ({ navigation }) => {
 
-    const { container, icon, container_2, titleContainer } = styles;
+    const { container, icon, container_2, titleContainer,roundContainer } = styles;
 
     return(
         <View style={container}>
@@ -21,8 +22,12 @@ const Home = ({ navigation }) => {
             </Block>
             <View style={container_2}>
                 <View style={titleContainer}>
-                    <Title content="Authentification" size="small" />
-                    <Title content="Google Connexion" size="medium" />
+                    <Title content="Bienvenue" size="small" />
+                    <Title content="Vous recherchez un" size="medium" />
+                </View>
+                <View style={roundContainer}>
+                    <RoundBtn iconName={`${prefix}-car`}/>
+                    <RoundBtn iconName={`${prefix}-person`} />
                 </View>
             </View>
         </View>
@@ -49,6 +54,12 @@ const styles = StyleSheet.create({
         width: width - 80,
         height: 50,
         justifyContent: 'center'
+    },
+    roundContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: width - 80
     }
 })
 
