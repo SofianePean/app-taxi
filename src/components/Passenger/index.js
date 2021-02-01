@@ -6,34 +6,86 @@ import {
   ActivityIndicator,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
+  Image,
 } from "react-native";
 import MapView, { Polyline, Marker } from "react-native-maps";
 import * as Location from "expo-location";
-import { BASE_URL, API_KEY, getRoute, decodePoint } from "../../utils/constant";
+import {
+  BASE_URL,
+  API_KEY,
+  getRoute,
+  decodePoint,
+  SERVER_URL,
+} from "../../utils/constant";
+import SockerIO from "socket.io-client";
+import TAXI_LOGO from '../../../assets/images/11.taxi.png'
 
 // Import composant
 import PlaceInput from "../PlaceInput";
 
 const { width, height } = Dimensions.get("window");
+let io;
 
 const Passenger = () => {
-    const mapView = useRef();
+  const mapView = useRef();
 
   const initialState = {
     latitude: null,
     longitude: null,
     coordinates: [],
     destinationCoords: null,
+    taxiCoord: null,
   };
-  const { container, map } = styles;
+  const { container, map, taxiStyle } = styles;
 
   const [state, setState] = useState(initialState);
+  const conectSocket = () => {
+    io = SockerIO.connect(SERVER_URL);
+    io.on("connect", () => {
+      console.log("connexion passager réussi !");
+    });
+    io.on("requestPassenger", (taxiInfo) => {
+      Alert.alert("Taxi en route");
+      setState((prevState) => ({
+        ...prevState,
+        taxiCoord: {
+          latitude: taxiInfo.lat,
+          longitude: taxiInfo.lng,
+        },
+      }));
+    });
+  };
 
   useEffect(() => {
     getUserLocation();
   }, []);
 
-  const { latitude, longitude, coordinates, destinationCoords } = state;
+  useEffect(() => {
+    if(taxiCoord) {
+      mapView.current.fitToCoordinates([...coordinates, taxiCoord], {
+        animated: true,
+        edgePadding: {
+          top: 100,
+          bottom: 40,
+          left: 40,
+          right: 40,
+        },
+      });
+    }
+  }, [taxiCoord]);
+  
+  useEffect(() => {
+    return () => io.emit('quit', "pass")
+  }, [])
+
+  const {
+    latitude,
+    longitude,
+    coordinates,
+    destinationCoords,
+    taxiCoord,
+  } = state;
 
   const getUserLocation = async () => {
     try {
@@ -45,6 +97,7 @@ const Passenger = () => {
         latitude,
         longitude,
       }));
+      conectSocket();
     } catch (e) {
       console.log("ERROR LOCATION", e);
     }
@@ -61,14 +114,15 @@ const Passenger = () => {
         destinationCoords: coordinates[coordinates.length - 1],
       }));
       mapView.current.fitToCoordinates(coordinates, {
-          animated: true,
-          edgePadding: {
-              top: 100,
-              bottom: 40,
-              left: 40,
-              right: 40
-          }
+        animated: true,
+        edgePadding: {
+          top: 100,
+          bottom: 40,
+          left: 40,
+          right: 40,
+        },
       });
+      io.emit("requestTaxi", { latitude, longitude });
     } catch (e) {
       console.log("prediction place_id", e);
     }
@@ -85,7 +139,7 @@ const Passenger = () => {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={container}>
         <MapView
-        ref={mapView}
+          ref={mapView}
           style={map}
           showsUserLocation
           followsUserLocation
@@ -104,6 +158,11 @@ const Passenger = () => {
             />
           )}
           {destinationCoords && <Marker coordinate={destinationCoords} />}
+          {taxiCoord && (
+            <Marker coordinate={taxiCoord}>
+              <Image source={TAXI_LOGO} style={taxiStyle}/>
+            </Marker>
+          )}
         </MapView>
         <PlaceInput
           latitude={latitude}
@@ -126,6 +185,10 @@ const styles = StyleSheet.create({
     width,
     height,
   },
+  taxiStyle: {
+    width: 30,
+    height: 30,
+  }
 });
 
 export default Passenger;

@@ -76,3 +76,4 @@ export const decodePoint = (point) => {
 
 export const API_KEY = "AIzaSyCkXm_skcOKquHka6r2K-wtgd98ediG0sc";
 export const BASE_URL = "https://maps.googleapis.com/maps/api";
+export const SERVER_URL = "http://192.168.1.24:4000"

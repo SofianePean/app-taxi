@@ -7,6 +7,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Login from '../components/Login';
 import Home from '../components/Home';
 import Passenger from '../components/Passenger';
+import Driver from '../components/Driver';
 
 const { Screen, Navigator } = createStackNavigator();
 // const Tab = createBottomTabNavigator();
@@ -18,6 +19,7 @@ const Navigation = ({initialRouteName}) => {
               <Screen name="Login" component={Login} />
               <Screen name="Home" component={Home} />
               <Screen name="Passenger" component={Passenger} />
+              <Screen name="Driver" component={Driver} />
           </Navigator>
       </NavigationContainer> 
     )
